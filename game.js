@@ -40,19 +40,65 @@ function processMove(cmd, cpu) {
   // Your code here
 }
 
+
+function menu_display() {
+      console.log("  Type 'r' for Rock");
+      console.log("  Type 'p' for Paper");
+      console.log("  Type 's' for Scissors");
+      console.log("  Type 'q' to quit");
+      console.log("  Type 'h' for a list of valid commands\n");
+}
+
+function playGame(cmd) {
+  const validMoveKeys = Object.keys(VALID_MOVES);
+  const randomIndex = Math.floor(Math.random() * validMoveKeys.length);
+  const cpu = validMoveKeys[randomIndex];
+
+  console.log(`You pick ${cmd}, computer picks ${cpu}.`);
+
+  if (cmd === cpu) { // tie
+    console.log("You tie.\n");
+    ties++;
+  }
+  else if (VALID_MOVES[cmd].winsAgainst === cpu) { // win
+    console.log("You win!\n");
+    wins++;
+  } else { // loss
+    console.log("You lose...\n");
+    losses++;
+  }
+}
 /******************************* MAIN FUNCTION *******************************/
 function promptInput(rl) {
   console.log(`${wins} wins - ${losses} losses - ${ties} ties`);
   rl.question('> ', (cmd) => {
     cmd = cmd.toLowerCase();
 
-    if (cmd === 'h') {
-      console.log("\nHelp:\n");
+    switch(cmd) {
+      case 'h':
+        console.log("\nHelp:\n"); 
+        menu_display();
+        break;
+      case 'q':
+          rl.close();
+          return;
+      default: 
+        if (VALID_MOVES.hasOwnProperty(cmd)) {
+          playGame(cmd);
+        } else {
+          console.log("\nInvalid command.\n");
+          menu_display();
+        }
+    }
+
+   /*  if (cmd === 'h') {
+       console.log("\nHelp:\n");
       console.log("  Type 'r' for Rock");
       console.log("  Type 'p' for Paper");
       console.log("  Type 's' for Scissors");
       console.log("  Type 'q' to quit");
       console.log("  Type 'h' for a list of valid commands\n");
+      menu_display();
     } else if (cmd === 'q') {
       rl.close();
       return;
@@ -81,8 +127,9 @@ function promptInput(rl) {
       console.log("  Type 's' for Scissors");
       console.log("  Type 'q' to quit");
       console.log("  Type 'h' for a list of valid commands\n");
+      menu_display();
     }
-
+ */
     promptInput(rl);
   });
 }
